@@ -6,3 +6,5 @@
 xpense-api-gateway/src/main/resources/static/*
 xpense-api-gateway/target/*
 xpense-service/target/*
+xpense-api-gateway/src/main/frontend/build
+xpense-api-gateway/src/main/frontend/node_modules
