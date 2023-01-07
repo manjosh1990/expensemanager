@@ -5,3 +5,4 @@
 .idea/compiler.xml
 xpense-api-gateway/src/main/resources/static/*
 xpense-api-gateway/target/*
+xpense-service/target/*
