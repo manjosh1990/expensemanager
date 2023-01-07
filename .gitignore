@@ -1,10 +1,13 @@
 # Default ignored files
 /shelf/
 /workspace.xml
-*/.idea*
+/.idea*
 .idea/compiler.xml
 xpense-api-gateway/src/main/resources/static/*
 xpense-api-gateway/target/*
 xpense-service/target/*
-xpense-api-gateway/src/main/frontend/build
-xpense-api-gateway/src/main/frontend/node_modules
+xpense-api-gateway/src/main/frontend/build/*
+xpense-api-gateway/src/main/frontend/node_modules/*
+xpense-api-gateway/xpense-api-gateway.iml
+xpense-service/xpense-service.iml
+xpensive-parent.iml
