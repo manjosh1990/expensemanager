@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `xpense_transactions`(
     `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `name` varchar(256) NOT NULL,
     `type` ENUM('BANK','CREDIT_CARD','WALLET','PAYLATER') NOT NULL,
-    `decription` varchar(1024) NOT NULL,
+    `description` varchar(1024) NOT NULL,
     `fk_xpense_category` int(11) NOT NULL,
     `withdrawal_amount` DECIMAL(10,2),
     `deposit_amount` DECIMAL(10,2),
@@ -43,4 +43,16 @@ CREATE TABLE IF NOT EXISTS `xpense_transactions`(
     CONSTRAINT `fk_xpense_category_key` FOREIGN KEY (`fk_xpense_category`) REFERENCES `xpense_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
+CREATE TABLE IF NOT EXISTS `xpense_raw_transactions`(
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `transactionDate` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `narration` varchar(1024) NOT NULL,
+    `chqRefNo` varchar(256) DEFAULT NULL,
+    `fkSubXpenseCategory` int(11) DEFAULT NULL,
+    `withdrawalAmt` DECIMAL(10,2),
+    `depositAmt` DECIMAL(10,2),
+    `closingBalance` DECIMAL(10,2) DEFAULT 0,
+	`bank` varchar(31) NOT NULL,
+     PRIMARY KEY (`id`)
+);
 
