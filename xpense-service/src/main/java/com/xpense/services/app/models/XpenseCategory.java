@@ -10,8 +10,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name ="xpense_category")
 @Data
-@Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,4 +22,28 @@ public class XpenseCategory {
 
     @Column(name = "sub_category")
     private String subCategory;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getCategory() {
+        return category;
+    }
+
+    public void setCategory(Integer category) {
+        this.category = category;
+    }
+
+    public String getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(String subCategory) {
+        this.subCategory = subCategory;
+    }
 }

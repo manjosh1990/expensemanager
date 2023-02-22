@@ -9,14 +9,13 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Component
 public class PDFFileProcessor {
     protected String dateRegex = "^\\d{2}/\\d{2}/\\d{2}.*";
+
     public List<HdfcRawTransaction> loadPdfFile(boolean isWithdrawal) {
         List<HdfcRawTransaction> result = null;
         try {
@@ -29,7 +28,7 @@ public class PDFFileProcessor {
             boolean[] startFlag = new boolean[1];
             for (int i = 1; i <= pages; i++) {
                 String contentOfPage = pdfTextExtractor.getTextFromPage(i, true);
-                process(contentOfPage, transactions, isWithdrawal,startFlag);
+                process(contentOfPage, transactions, isWithdrawal, startFlag);
             }
             result = transactions;
         } catch (Exception e) {
@@ -39,7 +38,7 @@ public class PDFFileProcessor {
         return result;
     }
 
-    private void process(String pageContent, List<HdfcRawTransaction> rawTransactions, boolean isWithdrawal,boolean[] startFlag) {
+    private void process(String pageContent, List<HdfcRawTransaction> rawTransactions, boolean isWithdrawal, boolean[] startFlag) {
         boolean start = startFlag[0];
         boolean fileHeader = true;
         boolean incompleteTransaction = false;
@@ -50,16 +49,16 @@ public class PDFFileProcessor {
             if (!start) {
                 log.debug("Starting line processing after this line: {}", line);
                 start = true;
-                startFlag[0]=true;
+                startFlag[0] = true;
             } else {
                 if (line.matches(dateRegex)) {
                     // log.info("new line : {}", line);
                     fileHeader = false;
                     String[] words;
                     if (incompleteTransaction) {
-                        processIncompleteTransaction(descBuilder,lineEnd, (List<HdfcRawTransaction>) rawTransactions,isWithdrawal);
-                        incompleteTransaction=false;
-                        descBuilder=null;
+                        processIncompleteTransaction(descBuilder, lineEnd, rawTransactions, isWithdrawal);
+                        incompleteTransaction = false;
+                        descBuilder = null;
                     }
                     words = line.split(" ");
                     boolean fullTransaction = checkIfContainsBalance(words);
@@ -85,22 +84,25 @@ public class PDFFileProcessor {
                     }
                     if (!rawTransactions.isEmpty() && !fileHeader) {
                         log.info("next line :{}", line);
-                        HdfcRawTransaction lastTransaction = (HdfcRawTransaction) rawTransactions.get(rawTransactions.size() - 1);
-                        lastTransaction.setNarration(lastTransaction.getNarration().trim() + line);
+                        HdfcRawTransaction lastTransaction = rawTransactions.get(rawTransactions.size() - 1);
+                        StringBuilder newDesc = new StringBuilder(lastTransaction.getNarration().trim() + line);
+                        lastTransaction.setNarration(newDesc.toString().trim());
                     }
                 }
             }
         }
-        if(incompleteTransaction){
-            processIncompleteTransaction(descBuilder,lineEnd,rawTransactions,isWithdrawal);
+        if (incompleteTransaction) {
+            processIncompleteTransaction(descBuilder, lineEnd, rawTransactions, isWithdrawal);
         }
     }
-    private void processIncompleteTransaction(StringBuilder descBuilder, String lineEnd,List<HdfcRawTransaction> rawTransactions, boolean isWithdrawal){
-        if(lineEnd!=null)
+
+    private void processIncompleteTransaction(StringBuilder descBuilder, String lineEnd, List<HdfcRawTransaction> rawTransactions, boolean isWithdrawal) {
+        if (lineEnd != null)
             descBuilder.append(lineEnd);
-        String[]   words = descBuilder.toString().split(" ");
-        processLine(words, rawTransactions,isWithdrawal);
+        String[] words = descBuilder.toString().split(" ");
+        processLine(words, rawTransactions, isWithdrawal);
     }
+
     private boolean checkIfContainsBalance(String[] words) {
         String lastWord = words[words.length - 1];
         if (!lastWord.contains(",")) return false;
@@ -133,7 +135,7 @@ public class PDFFileProcessor {
                     }
                 }
             }
-            hdfcRawTransaction.setNarration(desc.toString());
+            hdfcRawTransaction.setNarration(desc.toString().trim());
             double amt = Double.parseDouble(words[index + 1].replace(",", ""));
             double closingBalance = Double.parseDouble(words[words.length - 1].replace(",", ""));
             if (rawTransactions.isEmpty()) {
@@ -167,10 +169,10 @@ public class PDFFileProcessor {
                 hdfcRawTransaction.setWithdrawalAmt(amt);
             } else {
                 //deposit
-                if(amt<0){//check reversal transactions
+                if (amt < 0) {//check reversal transactions
                     hdfcRawTransaction.setWithdrawalAmt(amt);
-                }else
-                 hdfcRawTransaction.setDepositAmt(amt);
+                } else
+                    hdfcRawTransaction.setDepositAmt(amt);
             }
             hdfcRawTransaction.setClosingBalance(closingBalance);
 
@@ -196,10 +198,11 @@ public class PDFFileProcessor {
                 "FCBANK-HDFC0004386-225639849307-IPHONE M\n" +
                 "UTIPL\n";
         List<HdfcRawTransaction> transactions = new ArrayList<>();
+        Set<String> desc = new HashSet<>();
         boolean[] startFlag = new boolean[1];
-        p.process(content, transactions, true,startFlag);
-        transactions.forEach(transaction->{
-            log.info(transaction.getTransactionDate().toString()+"|"+transaction.getNarration()+"|"+transaction.getChqRefNo()+"|"+transaction.getWithdrawalAmt()+"|"+transaction.getDepositAmt()+"|"+transaction.getClosingBalance());
+        p.process(content, transactions, true, startFlag);
+        transactions.forEach(transaction -> {
+            log.info(transaction.getTransactionDate().toString() + "|" + transaction.getNarration() + "|" + transaction.getChqRefNo() + "|" + transaction.getWithdrawalAmt() + "|" + transaction.getDepositAmt() + "|" + transaction.getClosingBalance());
         });
     }
 }
