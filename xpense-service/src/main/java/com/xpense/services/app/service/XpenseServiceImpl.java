@@ -31,7 +31,11 @@ public class XpenseServiceImpl implements XpenseService{
     @Override
     public NetWorthResponse getNetWorth() {
         Random random = new Random();
-        return NetWorthResponse.builder().balance(150000.00).id(random.nextInt(1000)+1).build();
+        return calculateNetWorth();
+    }
+
+    public NetWorthResponse calculateNetWorth() {
+        return xpenseRepository.findNetWorthFromLedger();
     }
 
     @Override

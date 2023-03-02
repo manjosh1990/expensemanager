@@ -1,5 +1,6 @@
 package com.xpense.services.app.repository;
 
+import com.xpense.services.app.dto.NetWorthResponse;
 import com.xpense.services.app.fileprocessing.DefaultRawTransaction;
 import com.xpense.services.app.models.Category;
 import com.xpense.services.app.models.DescCategoryMapping;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import java.math.BigDecimal;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -106,5 +108,21 @@ public class XpenseRepositoryDaoImpl implements XpenseRepositoryDao {
             transactions.add(xpenseTransaction);
         }
         return transactions;
+    }
+
+    @Override
+    public NetWorthResponse findNetWorthFromLedger() {
+        String query = "SELECT SUM(debit) AS total_debit, SUM(credit) AS total_credit FROM xpense_transactions";
+        NetWorthResponse netWorthResponse = new NetWorthResponse();
+        List<?> result = entityManager.createNativeQuery(query).getResultList();
+        if(result!=null && !result.isEmpty()){
+           Object[] row = (Object[]) result.get(0);
+           BigDecimal debit = (BigDecimal) row[0];
+           BigDecimal credit =(BigDecimal) row[1];
+           BigDecimal balance =  credit.subtract(debit);
+           netWorthResponse.setBalance(balance);
+           netWorthResponse.setTotalSpent(debit);
+        }
+        return netWorthResponse;
     }
 }

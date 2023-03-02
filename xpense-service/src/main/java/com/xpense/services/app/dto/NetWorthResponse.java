@@ -5,12 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class NetWorthResponse {
-    Integer id;
-    Double balance;
-    Double totalSpent;
+    BigDecimal balance;
+    BigDecimal totalSpent;
 }

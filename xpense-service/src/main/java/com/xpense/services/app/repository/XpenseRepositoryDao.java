@@ -1,5 +1,6 @@
 package com.xpense.services.app.repository;
 
+import com.xpense.services.app.dto.NetWorthResponse;
 import com.xpense.services.app.fileprocessing.DefaultRawTransaction;
 import com.xpense.services.app.models.Category;
 import com.xpense.services.app.models.DescCategoryMapping;
@@ -23,4 +24,6 @@ public interface XpenseRepositoryDao {
     public List<DescCategoryMapping> saveAllDescMappings(Set<DescCategoryMapping> mappingSet);
 
     List<XpenseTransactions> saveAllXpenseTransactions(List<XpenseTransactions> xpenseTransactions);
+
+    NetWorthResponse findNetWorthFromLedger();
 }
