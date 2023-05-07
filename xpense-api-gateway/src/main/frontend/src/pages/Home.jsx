@@ -2,7 +2,7 @@ import React,{useEffect,useState} from 'react'
 import { TbCurrencyRupee } from 'react-icons/tb';
 import { GoPrimitiveDot } from 'react-icons/go';
 import { Stacked, Pie, Button, SparkLine } from '../components';
-import { earningData, SparklineAreaData, ecomPieChartData } from '../data/dummy';
+import { expenses, SparklineAreaData, ecomPieChartData } from '../data/dummy';
 import Service  from '../HttpUtil';
 
 import { useStateContext } from '../contexts/ContextProvider';
@@ -11,6 +11,7 @@ import { itemMove } from '@syncfusion/ej2/treemap';
 
 const Home = () => {
   const[netWorth, setNetWorth] = useState(0);
+  const[foodExpense,setFoodExpense] = useState(0);
   const httpService = new Service();
   //used to format number
   const numberFormat = (value) =>
@@ -31,7 +32,19 @@ const Home = () => {
             console.log("could not fetch netWorth: exception occured: "+ error);
           }
         }
+
+        //fetch food expense
+        async function getFoodExpenses(){
+          try{
+          const res = await httpService.get("foodExpense");
+          console.log("food",res);
+          setFoodExpense(res.expense)
+          }catch(error){
+            console.log("could not fetch foodExpense: exception occured: "+ error);
+          }
+        }
         getNetWorth();
+        getFoodExpenses();
       },2000)
      
     },[]);
@@ -58,7 +71,7 @@ const Home = () => {
           </div>
         </div>
         <div className='flex m-3 flex-wrap justify-center gap-1 items-center'>
-          {earningData.map(
+          {expenses.map(
             (item)=>(
               <div key={item.title}
               className="bg-white dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56 p-4 pt-9 rounded-2xl">
@@ -70,7 +83,7 @@ const Home = () => {
                   </button> 
                   <p className='mt-3'>
                       <span className='text-lg font-semibold'>
-                        {item.amount}
+                        {item.name === "food"?numberFormat(foodExpense) : item.amount}
                       </span>
                       <span className={`text-sm text-${item.pcColor} ml-2`}>
                         {item.percentage}

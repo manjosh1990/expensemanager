@@ -1,4 +1,5 @@
- const headers = {
+import config from './config'
+const headers = {
   Accept: "application/json",
   "Content-type": "application/json",
 };
@@ -6,9 +7,11 @@
 const joinUrl = (baseUrl, url)=>{
   return `${baseUrl}/${url}`
 }
+const apiUrl = config.apiUrl;
+const apiPort = config.apiPort;
 class Service {
   constructor() {
-    this.domain = "http://localhost:10443/xpense/service/v1/dashboard";
+    this.domain = `${apiUrl}:${apiPort}/xpense/service/v1/dashboard`;
   }
 
   request(url,method="POST",data=null) {

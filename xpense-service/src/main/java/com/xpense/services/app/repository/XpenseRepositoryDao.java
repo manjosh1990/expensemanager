@@ -7,6 +7,7 @@ import com.xpense.services.app.models.DescCategoryMapping;
 import com.xpense.services.app.models.XpenseCategory;
 import com.xpense.services.app.models.XpenseTransactions;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -26,4 +27,6 @@ public interface XpenseRepositoryDao {
     List<XpenseTransactions> saveAllXpenseTransactions(List<XpenseTransactions> xpenseTransactions);
 
     NetWorthResponse findNetWorthFromLedger();
+
+    Double findSumFromCategoryName(String categoryName);
 }

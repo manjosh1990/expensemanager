@@ -613,7 +613,7 @@ export const chatData = [
   },
 ];
 
-export const earningData = [
+export const expenses = [
   {
     name:"food",
     icon: <MdOutlineRestaurant />,

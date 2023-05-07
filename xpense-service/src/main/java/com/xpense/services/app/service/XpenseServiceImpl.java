@@ -2,6 +2,7 @@ package com.xpense.services.app.service;
 
 import com.xpense.services.app.dto.CategoryCard;
 import com.xpense.services.app.dto.NetWorthResponse;
+import com.xpense.services.app.dto.XpenseResponse;
 import com.xpense.services.app.fileprocessing.DefaultRawTransaction;
 import com.xpense.services.app.fileprocessing.HdfcRawTransaction;
 import com.xpense.services.app.fileprocessing.PDFFileProcessor;
@@ -14,8 +15,11 @@ import com.xpense.services.app.repository.XpenseRepositoryDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.xpense.services.app.utils.CategoryNames.FOODANDRESTAURANTS;
 
 @Service
 public class XpenseServiceImpl implements XpenseService{
@@ -41,8 +45,8 @@ public class XpenseServiceImpl implements XpenseService{
     @Override
     public List<CategoryCard> getCategoryCardsData() {
         List<XpenseCategory> xpenseCategories = xpenseRepository.findAll();
-        List<Category> getCateGories = xpenseRepository.findAllCategory();
-        System.out.println(getCateGories);
+        List<Category> getCategories = xpenseRepository.findAllCategory();
+        System.out.println(getCategories);
         System.out.println(xpenseCategories);
         return null;
     }
@@ -97,5 +101,22 @@ public class XpenseServiceImpl implements XpenseService{
             newXpenseTransactions.add(mapToXpenseTransactions((HdfcRawTransaction) defaultRawTransaction));
         }
        return xpenseRepository.saveAllXpenseTransactions(newXpenseTransactions);
+    }
+
+    @Override
+    public XpenseResponse getExpense(String category) {
+        XpenseResponse res = new XpenseResponse();
+        switch (category){
+            case "food" :
+                Double sum = xpenseRepository.findSumFromCategoryName(FOODANDRESTAURANTS);
+                res.setExpense(new BigDecimal(sum));
+                res.setName(FOODANDRESTAURANTS);
+                break;
+            case "":
+                break;
+            default:
+
+        }
+        return res;
     }
 }

@@ -2,7 +2,7 @@ use 'xpense';
 
 delete from `category`;
 -- dumping category data
-insert into `category` (`name`) values ('FOOD&RESTAURANT');
+insert into `category` (`name`) values ('FOOD&RESTAURANTS');
 insert into `category` (`name`) values ('BILLS&UTILITIES');
 insert into `category` (`name`) values ('MEDICAL_EXPENSES&INSURANCE');
 insert into `category` (`name`) values ('FUEL&VEHICLE_MAINTENANCE');

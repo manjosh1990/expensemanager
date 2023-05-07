@@ -1,6 +1,7 @@
 package com.xpense.services.app.repository;
 
 import com.xpense.services.app.dto.NetWorthResponse;
+import com.xpense.services.app.exceptions.ServiceException;
 import com.xpense.services.app.fileprocessing.DefaultRawTransaction;
 import com.xpense.services.app.models.Category;
 import com.xpense.services.app.models.DescCategoryMapping;
@@ -9,15 +10,14 @@ import com.xpense.services.app.models.XpenseTransactions;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -100,10 +100,10 @@ public class XpenseRepositoryDaoImpl implements XpenseRepositoryDao {
     @Transactional
     public List<XpenseTransactions> saveAllXpenseTransactions(List<XpenseTransactions> xpenseTransactions) {
         List<XpenseTransactions> transactions = new ArrayList<>();
-        if(xpenseTransactions == null){
+        if (xpenseTransactions == null) {
             return transactions;
         }
-        for (XpenseTransactions xpenseTransaction: xpenseTransactions){
+        for (XpenseTransactions xpenseTransaction : xpenseTransactions) {
             entityManager.persist(xpenseTransaction);
             transactions.add(xpenseTransaction);
         }
@@ -115,14 +115,32 @@ public class XpenseRepositoryDaoImpl implements XpenseRepositoryDao {
         String query = "SELECT SUM(debit) AS total_debit, SUM(credit) AS total_credit FROM xpense_transactions";
         NetWorthResponse netWorthResponse = new NetWorthResponse();
         List<?> result = entityManager.createNativeQuery(query).getResultList();
-        if(result!=null && !result.isEmpty()){
-           Object[] row = (Object[]) result.get(0);
-           BigDecimal debit = (BigDecimal) row[0];
-           BigDecimal credit =(BigDecimal) row[1];
-           BigDecimal balance =  credit.subtract(debit);
-           netWorthResponse.setBalance(balance);
-           netWorthResponse.setTotalSpent(debit);
+        if (result != null && !result.isEmpty()) {
+            Object[] row = (Object[]) result.get(0);
+            BigDecimal debit = (BigDecimal) row[0];
+            BigDecimal credit = (BigDecimal) row[1];
+            BigDecimal balance = credit.subtract(debit);
+            netWorthResponse.setBalance(balance);
+            netWorthResponse.setTotalSpent(debit);
         }
         return netWorthResponse;
+    }
+
+    @Override
+    public Double findSumFromCategoryName(String categoryName) {
+        List<Category> categories = castList(entityManager.createQuery("from Category where name = ?1").setParameter(1, categoryName).getResultList(), Category.class);
+        if (categories.isEmpty()) {
+            throw new ServiceException(1001, "Category not found");
+        }
+        String jpqlQuery = "SELECT SUM(e.debit) FROM XpenseTransactions e WHERE e.xpenseCategory IN (SELECT re.id FROM XpenseCategory re WHERE re.category = :category)";
+
+        TypedQuery<Double> query = entityManager.createQuery(jpqlQuery, Double .class);
+        query.setParameter("category", categories.get(0).getId());
+
+        List<Double> result = query.getResultList();
+        if(result == null){
+            throw new ServiceException(1002, "error computing sum");
+        }
+        return result.get(0);
     }
 }
