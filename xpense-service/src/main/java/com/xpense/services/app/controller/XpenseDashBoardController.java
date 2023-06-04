@@ -1,6 +1,5 @@
 package com.xpense.services.app.controller;
 
-import com.xpense.services.app.dto.CategoryCard;
 import com.xpense.services.app.dto.NetWorthResponse;
 import com.xpense.services.app.dto.XpenseResponse;
 import com.xpense.services.app.fileprocessing.DefaultRawTransaction;
@@ -27,10 +26,10 @@ public class XpenseDashBoardController {
         return xpenseService.getNetWorth();
     }
 
-    @GetMapping("/foodExpense")
+    @GetMapping("/{category}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> getFoodExpense() {
-        XpenseResponse foodExpense = xpenseService.getExpense("food");
+    public ResponseEntity<?> getExpenseByCategory(@PathVariable String category) {
+        XpenseResponse foodExpense = xpenseService.getExpense(category);
         return ResponseEntity.ok(foodExpense);
     }
 

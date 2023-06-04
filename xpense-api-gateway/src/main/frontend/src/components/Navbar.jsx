@@ -48,7 +48,6 @@ const Navbar = () => {
     } else {
       setActiveMenu(true);
     }
-    console.log("screenSize " + screenSize);
   }, [screenSize])
 
   return (

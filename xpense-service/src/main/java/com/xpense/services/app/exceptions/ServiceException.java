@@ -1,5 +1,9 @@
 package com.xpense.services.app.exceptions;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.OK)
 public class ServiceException extends RuntimeException {
     private int errorCode;
     private String message;

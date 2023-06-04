@@ -3,6 +3,7 @@ package com.xpense.services.app.service;
 import com.xpense.services.app.dto.CategoryCard;
 import com.xpense.services.app.dto.NetWorthResponse;
 import com.xpense.services.app.dto.XpenseResponse;
+import com.xpense.services.app.exceptions.ServiceException;
 import com.xpense.services.app.fileprocessing.DefaultRawTransaction;
 import com.xpense.services.app.fileprocessing.HdfcRawTransaction;
 import com.xpense.services.app.fileprocessing.PDFFileProcessor;
@@ -19,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.xpense.services.app.utils.CategoryNames.FOODANDRESTAURANTS;
+import static com.xpense.services.app.utils.CategoryNames.*;
 
 @Service
 public class XpenseServiceImpl implements XpenseService{
@@ -106,17 +107,35 @@ public class XpenseServiceImpl implements XpenseService{
     @Override
     public XpenseResponse getExpense(String category) {
         XpenseResponse res = new XpenseResponse();
+        Double sum = (double) 0;
+        String name ="";
         switch (category){
             case "food" :
-                Double sum = xpenseRepository.findSumFromCategoryName(FOODANDRESTAURANTS);
-                res.setExpense(new BigDecimal(sum));
-                res.setName(FOODANDRESTAURANTS);
+            case "groceries":
+                name = FOOD_AND_RESTAURANTS;
+                sum = xpenseRepository.findSumFromCategoryName(name);
+                if(category.equals("groceries")){
+                    name=GROCERIES;
+                }
                 break;
-            case "":
+            case "bills":
+                name = BILLS_UTILITIES;
+                sum = xpenseRepository.findSumFromCategoryName(name);
+                break;
+            case "shopping":
+                name = SHOPPING;
+                sum = xpenseRepository.findSumFromCategoryName(name);
+                break;
+            case "others":
+                name = OTHERS;
+                sum = xpenseRepository.findSumFromCategoryName(name);
                 break;
             default:
+                throw new ServiceException(1001, "invalid category");
 
         }
+        res.setExpense(new BigDecimal(sum!=null?sum:0));
+        res.setName(name);
         return res;
     }
 }
