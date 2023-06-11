@@ -3194,7 +3194,7 @@ export const stackedCustomSeries = [
   { dataSource: stackedChartData[0],
     xName: 'x',
     yName: 'y',
-    name: 'Budget',
+    name: 'Income',
     type: 'StackingColumn',
     background: 'blue',
 

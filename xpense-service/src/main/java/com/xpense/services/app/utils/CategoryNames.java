@@ -5,6 +5,5 @@ public interface CategoryNames {
     String BILLS_UTILITIES = "BILLS&UTILITIES";
     String SHOPPING = "SHOPPING";
     String OTHERS = "Adhoc&Others";
-
     String GROCERIES ="GROCERIES";
 }
