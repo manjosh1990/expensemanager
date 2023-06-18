@@ -44,4 +44,5 @@ public class XpenseDashBoardController {
        List<XpenseTransactions> xpenseTransactions = xpenseService.processTransactions();
         return ResponseEntity.ok(xpenseTransactions);
     }
+
 }
