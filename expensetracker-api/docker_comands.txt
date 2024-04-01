@@ -1,0 +1,2 @@
+#host_port:container_port
+docker run -p 8080:8080 manjosh1990/expensetracker-api
