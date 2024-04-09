@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,8 +24,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -74,5 +76,51 @@ public class ExpenseControllerTest {
                 .andExpect(jsonPath("$.hasPrevious", CoreMatchers.equalTo(hasPrevious)))
                 .andExpect(jsonPath("$.isFirst", CoreMatchers.equalTo(isFirst)))
                 .andExpect(jsonPath("$.isLast", CoreMatchers.equalTo(isLast)));
+    }
+
+    @Test
+    void shouldCreateExpenseTransactionSuccessfully() throws Exception{
+        this.mvc.perform(
+                post("/api/expense/transactions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "amount": 12000.00,
+                                    "transactionDate": "2024-03-17",
+                                    "type": "INVESTMENT",
+                                    "category": "MUTUAL_FUNDS",
+                                    "description": "Scripbox SIP"
+                                }
+                                """)
+        ).andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", notNullValue()))
+                .andExpect(jsonPath("$.amount", is(12000.00)))
+                .andExpect(jsonPath("$.type", is("INVESTMENT")));
+    }
+
+
+    @Test
+    void shouldFailToCreateExpenseTransactionWhenAmountIsNotPresent() throws Exception {
+        this.mvc.perform(
+                        post("/api/expense/transactions")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                {
+                                    "transactionDate": "2024-03-17",
+                                    "type": "INVESTMENT",
+                                    "category": "MUTUAL_FUNDS",
+                                    "description": "Scripbox SIP"
+                                }
+                """)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string("Content-Type", is("application/problem+json")))
+                .andExpect(jsonPath("$.type", is("https://zalando.github.io/problem/constraint-violation")))
+                .andExpect(jsonPath("$.title", is("Constraint Violation")))
+                .andExpect(jsonPath("$.status", is(400)))
+                .andExpect(jsonPath("$.violations", hasSize(1)))
+                .andExpect(jsonPath("$.violations[0].field", is("amount")))
+                .andExpect(jsonPath("$.violations[0].message", is("amount should not be empty")))
+                .andReturn();
     }
 }

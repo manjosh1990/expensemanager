@@ -9,6 +9,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class ExpenseService {
@@ -34,5 +36,18 @@ public class ExpenseService {
         Pageable pageable = PageRequest.of(pageNo,10, Sort.Direction.DESC,"createdAt");
         Page<ExpenseTransactionDTO> transactionsDTO = repository.findExpenseTransactionsByType(TransactionType.valueOf(type),pageable);
         return new TransactionsDTO(transactionsDTO);
+    }
+
+    public ExpenseTransactionDTO createExpenseTransaction(CreateTransactionRequest request) {
+        ExpenseTransaction expenseTransaction = new ExpenseTransaction(
+                null,
+                request.getAmount()
+                ,request.getTransactionDate(),
+                TransactionType.valueOf(request.getType()),
+                Category.valueOf(request.getCategory()),
+                request.getDescription(),
+                LocalDateTime.now());
+        ExpenseTransaction newTransaction = repository.save(expenseTransaction);
+       return mapper.toDTO(newTransaction);
     }
 }
