@@ -1,8 +1,10 @@
 package com.expensetracker.api;
 
 
+import com.expensetracker.api.domain.Category;
 import com.expensetracker.api.domain.ExpenseTransaction;
 import com.expensetracker.api.domain.ExpenseTransactionRepository;
+import com.expensetracker.api.domain.TransactionType;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,16 +44,16 @@ public class ExpenseControllerTest {
     void setUp(){
         repository.deleteAllInBatch();
         transactions = new ArrayList<>();
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("1000.00"), LocalDate.now(), ExpenseTransaction.TransactionType.EXPENSE, ExpenseTransaction.Category.ENTERTAINMENT,"Movies", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("1300.00"),LocalDate.now(), ExpenseTransaction.TransactionType.EXPENSE, ExpenseTransaction.Category.FOOD,"Food", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("1200.00"),LocalDate.now(), ExpenseTransaction.TransactionType.EXPENSE, ExpenseTransaction.Category.TRANSPORTATION,"Fuel", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("1100.00"),LocalDate.now(), ExpenseTransaction.TransactionType.EXPENSE, ExpenseTransaction.Category.OTHER,"Credit Card", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("400.00"),LocalDate.now(), ExpenseTransaction.TransactionType.EXPENSE, ExpenseTransaction.Category.ENTERTAINMENT,"Prime", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("500.00"),LocalDate.now(), ExpenseTransaction.TransactionType.EXPENSE, ExpenseTransaction.Category.RENT,"OLA", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("600.00"),LocalDate.now(), ExpenseTransaction.TransactionType.EXPENSE, ExpenseTransaction.Category.FOOD,"Swiggy", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("200.00"),LocalDate.now(), ExpenseTransaction.TransactionType.EXPENSE, ExpenseTransaction.Category.TRANSPORTATION,"Car fuel", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("4000.00"),LocalDate.now(), ExpenseTransaction.TransactionType.EXPENSE, ExpenseTransaction.Category.FOOD,"Zomato", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("120.00"),LocalDate.now(), ExpenseTransaction.TransactionType.EXPENSE, ExpenseTransaction.Category.FOOD,"Groceries", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null,new BigDecimal("1000.00"), LocalDate.now(), TransactionType.EXPENSE, Category.ENTERTAINMENT,"Movies", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null,new BigDecimal("1300.00"),LocalDate.now(), TransactionType.EXPENSE, Category.FOOD,"Food", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null,new BigDecimal("1200.00"),LocalDate.now(), TransactionType.EXPENSE, Category.TRANSPORTATION,"Fuel", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null,new BigDecimal("1100.00"),LocalDate.now(), TransactionType.EXPENSE, Category.OTHER,"Credit Card", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null,new BigDecimal("400.00"),LocalDate.now(), TransactionType.EXPENSE, Category.ENTERTAINMENT,"Prime", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null,new BigDecimal("500.00"),LocalDate.now(), TransactionType.EXPENSE, Category.RENT,"OLA", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null,new BigDecimal("600.00"),LocalDate.now(), TransactionType.EXPENSE, Category.FOOD,"Swiggy", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null,new BigDecimal("200.00"),LocalDate.now(), TransactionType.EXPENSE, Category.TRANSPORTATION,"Car fuel", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null,new BigDecimal("4000.00"),LocalDate.now(), TransactionType.EXPENSE, Category.FOOD,"Zomato", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null,new BigDecimal("120.00"),LocalDate.now(), TransactionType.EXPENSE, Category.FOOD,"Groceries", LocalDateTime.now()));
 
         repository.saveAll(transactions);
     }

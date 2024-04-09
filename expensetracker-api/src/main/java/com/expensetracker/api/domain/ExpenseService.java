@@ -9,8 +9,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ExpenseService {
@@ -21,6 +19,20 @@ public class ExpenseService {
         int pageNo = page <1 ?0 :page-1;
         Pageable pageable = PageRequest.of(pageNo,10, Sort.Direction.DESC,"createdAt");
         Page<ExpenseTransactionDTO> transactionsDTO = repository.findExpenseTransactions(pageable);
+        return new TransactionsDTO(transactionsDTO);
+    }
+    @Transactional(readOnly = true)
+    public TransactionsDTO searchTransactionsByCategory(String category, Integer page) {
+        int pageNo = page <1 ?0 :page-1;
+        Pageable pageable = PageRequest.of(pageNo,10, Sort.Direction.DESC,"createdAt");
+        Page<ExpenseTransactionDTO> transactionsDTO = repository.searchTransactionsByCategory(Category.valueOf(category),pageable);
+        return new TransactionsDTO(transactionsDTO);
+    }
+    @Transactional(readOnly = true)
+    public TransactionsDTO searchTransactionsByType(String type, Integer page) {
+        int pageNo = page <1 ?0 :page-1;
+        Pageable pageable = PageRequest.of(pageNo,10, Sort.Direction.DESC,"createdAt");
+        Page<ExpenseTransactionDTO> transactionsDTO = repository.findExpenseTransactionsByType(TransactionType.valueOf(type),pageable);
         return new TransactionsDTO(transactionsDTO);
     }
 }

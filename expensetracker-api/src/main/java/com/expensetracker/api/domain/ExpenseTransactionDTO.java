@@ -11,14 +11,13 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 public class ExpenseTransactionDTO {
     private Long id;
     private BigDecimal amount;
     private LocalDate transactionDate;
-    private ExpenseTransaction.TransactionType type;
-    private ExpenseTransaction.Category category;
+    private TransactionType type;
+    private Category category;
     private String description;
     private LocalDateTime createdAt;
 }

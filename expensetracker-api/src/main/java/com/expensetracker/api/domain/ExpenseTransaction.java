@@ -19,26 +19,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ExpenseTransaction {
 
-    public enum TransactionType {
-        INCOME,
-        EXPENSE,
-        INVESTMENT
-    }
-
-    public enum Category {
-        FOOD,
-        RENT,
-        TRANSPORTATION,
-        ENTERTAINMENT,
-        GROCERIES,
-        SHOPPING,
-        MUTUAL_FUNDS,
-        STOCKS,
-        OTHER_INVESTMENTS,
-        LOAN,
-        SALARY,
-        OTHER
-    }
 
     @Id
     @SequenceGenerator(name = "ex_trn_seq_gen",sequenceName = "ex_trn_seq")

@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @Getter
 public class TransactionsDTO {
-    private List<ExpenseTransactionDTO> data;
+    private List<ExpenseTransactionResponse> data;
     private long totalElements;
     private int totalPages;
     private int currentPage;
@@ -22,7 +22,11 @@ public class TransactionsDTO {
     private boolean hasPrevious;
 
     public TransactionsDTO(Page<ExpenseTransactionDTO> transactionPage){
-        this.setData(transactionPage.getContent());
+        List<ExpenseTransactionResponse> content= transactionPage.getContent()
+                .stream()
+                .map(ExpenseTransactionResponse::from)
+                .toList();
+        this.setData(content);
         this.setTotalElements(transactionPage.getTotalElements());
         this.setTotalPages(transactionPage.getTotalPages());
         this.setCurrentPage(transactionPage.getNumber() +1);
