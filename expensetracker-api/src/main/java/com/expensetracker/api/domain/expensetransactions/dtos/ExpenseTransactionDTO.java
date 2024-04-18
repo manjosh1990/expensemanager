@@ -1,8 +1,9 @@
-package com.expensetracker.api.domain;
+package com.expensetracker.api.domain.expensetransactions.dtos;
 
+import com.expensetracker.api.domain.expensetransactions.entity.TransactionType;
+import com.expensetracker.api.domain.expensetransactions.entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;

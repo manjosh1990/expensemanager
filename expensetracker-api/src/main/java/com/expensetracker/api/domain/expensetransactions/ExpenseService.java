@@ -1,6 +1,12 @@
-package com.expensetracker.api.domain;
+package com.expensetracker.api.domain.expensetransactions;
 
 
+import com.expensetracker.api.domain.expensetransactions.dtos.CreateTransactionRequest;
+import com.expensetracker.api.domain.expensetransactions.dtos.ExpenseTransactionDTO;
+import com.expensetracker.api.domain.expensetransactions.dtos.TransactionsDTO;
+import com.expensetracker.api.domain.expensetransactions.entity.Category;
+import com.expensetracker.api.domain.expensetransactions.entity.ExpenseTransaction;
+import com.expensetracker.api.domain.expensetransactions.entity.TransactionType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,7 +52,7 @@ public class ExpenseService {
                 TransactionType.valueOf(request.getType()),
                 Category.valueOf(request.getCategory()),
                 request.getDescription(),
-                LocalDateTime.now());
+                LocalDateTime.now(),null);//need to implement user specific
         ExpenseTransaction newTransaction = repository.save(expenseTransaction);
        return mapper.toDTO(newTransaction);
     }

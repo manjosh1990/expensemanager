@@ -1,4 +1,4 @@
-package com.expensetracker.api.domain;
+package com.expensetracker.api.domain.expensetransactions.dtos;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

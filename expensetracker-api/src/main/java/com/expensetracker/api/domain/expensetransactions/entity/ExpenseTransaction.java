@@ -1,4 +1,4 @@
-package com.expensetracker.api.domain;
+package com.expensetracker.api.domain.expensetransactions.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExpenseTransaction {
-
 
     @Id
     @SequenceGenerator(name = "ex_trn_seq_gen",sequenceName = "ex_trn_seq")
@@ -45,4 +44,10 @@ public class ExpenseTransaction {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "user_id")
+    private Long userId;
+
+    public ExpenseTransaction(Long id,BigDecimal amount, LocalDate transactionDate, TransactionType type, Category category, String description, LocalDateTime createdAt) {
+        this(id,amount,transactionDate,type,category,description,createdAt,null);
+    }
 }

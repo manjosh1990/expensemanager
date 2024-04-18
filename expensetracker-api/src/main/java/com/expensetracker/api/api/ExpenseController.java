@@ -1,9 +1,9 @@
 package com.expensetracker.api.api;
 
-import com.expensetracker.api.domain.CreateTransactionRequest;
-import com.expensetracker.api.domain.ExpenseService;
-import com.expensetracker.api.domain.ExpenseTransactionDTO;
-import com.expensetracker.api.domain.TransactionsDTO;
+import com.expensetracker.api.domain.expensetransactions.dtos.CreateTransactionRequest;
+import com.expensetracker.api.domain.expensetransactions.ExpenseService;
+import com.expensetracker.api.domain.expensetransactions.dtos.ExpenseTransactionDTO;
+import com.expensetracker.api.domain.expensetransactions.dtos.TransactionsDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

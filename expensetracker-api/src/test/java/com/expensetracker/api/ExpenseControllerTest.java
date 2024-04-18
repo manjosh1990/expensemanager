@@ -1,10 +1,10 @@
 package com.expensetracker.api;
 
 
-import com.expensetracker.api.domain.Category;
-import com.expensetracker.api.domain.ExpenseTransaction;
-import com.expensetracker.api.domain.ExpenseTransactionRepository;
-import com.expensetracker.api.domain.TransactionType;
+import com.expensetracker.api.domain.expensetransactions.entity.Category;
+import com.expensetracker.api.domain.expensetransactions.entity.ExpenseTransaction;
+import com.expensetracker.api.domain.expensetransactions.ExpenseTransactionRepository;
+import com.expensetracker.api.domain.expensetransactions.entity.TransactionType;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,12 +40,11 @@ public class ExpenseControllerTest {
 
     @Autowired
     private ExpenseTransactionRepository repository;
-    private List<ExpenseTransaction> transactions;
 
     @BeforeEach
     void setUp(){
         repository.deleteAllInBatch();
-        transactions = new ArrayList<>();
+        List<ExpenseTransaction> transactions = new ArrayList<>();
         transactions.add(new ExpenseTransaction(null,new BigDecimal("1000.00"), LocalDate.now(), TransactionType.EXPENSE, Category.ENTERTAINMENT,"Movies", LocalDateTime.now()));
         transactions.add(new ExpenseTransaction(null,new BigDecimal("1300.00"),LocalDate.now(), TransactionType.EXPENSE, Category.FOOD,"Food", LocalDateTime.now()));
         transactions.add(new ExpenseTransaction(null,new BigDecimal("1200.00"),LocalDate.now(), TransactionType.EXPENSE, Category.TRANSPORTATION,"Fuel", LocalDateTime.now()));

@@ -1,12 +1,14 @@
-package com.expensetracker.api.domain;
+package com.expensetracker.api.domain.expensetransactions;
 
+import com.expensetracker.api.domain.expensetransactions.entity.ExpenseTransaction;
+import com.expensetracker.api.domain.expensetransactions.dtos.ExpenseTransactionDTO;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ExpenseTransactionMapper {
 
     public ExpenseTransactionDTO toDTO(ExpenseTransaction expenseTransaction){
-        ExpenseTransactionDTO dto = new ExpenseTransactionDTO(expenseTransaction.getId(),
+        return new ExpenseTransactionDTO(expenseTransaction.getId(),
                 expenseTransaction.getAmount(),
                 expenseTransaction.getTransactionDate(),
                 expenseTransaction.getType(),
@@ -14,6 +16,5 @@ public class ExpenseTransactionMapper {
                 expenseTransaction.getDescription(),
                 expenseTransaction.getCreatedAt()
                 );
-        return dto;
     }
 }
