@@ -59,6 +59,6 @@ public class ExpenseController {
 
     @GetMapping("/sum/{type}")
     public ResponseEntity<?> getSumByType(@PathVariable String type) {
-        return ResponseEntity.ok(expenseService.getSumByType(type));
+        return ResponseEntity.ok(expenseService.getSumByTransactionType(type));
     }
 }

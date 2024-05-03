@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.math.BigDecimal;
+
 public interface ExpenseTransactionRepository extends JpaRepository<ExpenseTransaction,Long> {
     @Query("SELECT new com.expensetracker.api.domain.expensetransactions.dtos.ExpenseTransactionDTO(e.id,e.amount,e.transactionDate,e.type,e.category,e.description,e.createdAt) from ExpenseTransaction e")
     Page<ExpenseTransactionDTO> findExpenseTransactions(Pageable pageable);
@@ -20,4 +22,8 @@ public interface ExpenseTransactionRepository extends JpaRepository<ExpenseTrans
     Page<ExpenseTransactionDTO> searchTransactionsByCategory(Category category, Pageable pageable);
 
     Page<ExpenseTransactionDTO> findExpenseTransactionsByType(TransactionType type, Pageable pageable);
+    @Query("""
+            SELECT sum(e.amount) from ExpenseTransaction e where MONTH(e.transactionDate)= MONTH(CURRENT_DATE) AND YEAR(e.transactionDate) = YEAR(CURRENT_DATE) and e.type=:type
+    """)
+    BigDecimal getTotalAmountByTypeForCurrentMonth(TransactionType type);
 }

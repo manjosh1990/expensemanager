@@ -1,9 +1,9 @@
 package com.expensetracker.api;
 
 
+import com.expensetracker.api.domain.expensetransactions.ExpenseTransactionRepository;
 import com.expensetracker.api.domain.expensetransactions.entity.Category;
 import com.expensetracker.api.domain.expensetransactions.entity.ExpenseTransaction;
-import com.expensetracker.api.domain.expensetransactions.ExpenseTransactionRepository;
 import com.expensetracker.api.domain.expensetransactions.entity.TransactionType;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -42,31 +43,31 @@ public class ExpenseControllerTest {
     private ExpenseTransactionRepository repository;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         repository.deleteAllInBatch();
         List<ExpenseTransaction> transactions = new ArrayList<>();
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("1000.00"), LocalDate.now(), TransactionType.EXPENSE, Category.ENTERTAINMENT,"Movies", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("1300.00"),LocalDate.now(), TransactionType.EXPENSE, Category.FOOD,"Food", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("1200.00"),LocalDate.now(), TransactionType.EXPENSE, Category.TRANSPORTATION,"Fuel", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("1100.00"),LocalDate.now(), TransactionType.EXPENSE, Category.OTHER,"Credit Card", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("400.00"),LocalDate.now(), TransactionType.EXPENSE, Category.ENTERTAINMENT,"Prime", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("500.00"),LocalDate.now(), TransactionType.EXPENSE, Category.RENT,"OLA", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("600.00"),LocalDate.now(), TransactionType.EXPENSE, Category.FOOD,"Swiggy", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("200.00"),LocalDate.now(), TransactionType.EXPENSE, Category.TRANSPORTATION,"Car fuel", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("4000.00"),LocalDate.now(), TransactionType.EXPENSE, Category.FOOD,"Zomato", LocalDateTime.now()));
-        transactions.add(new ExpenseTransaction(null,new BigDecimal("120.00"),LocalDate.now(), TransactionType.EXPENSE, Category.FOOD,"Groceries", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null, new BigDecimal("1000.00"), LocalDate.now(), TransactionType.EXPENSE, Category.ENTERTAINMENT, "Movies", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null, new BigDecimal("1300.00"), LocalDate.now(), TransactionType.EXPENSE, Category.FOOD, "Food", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null, new BigDecimal("1200.00"), LocalDate.now(), TransactionType.EXPENSE, Category.TRANSPORTATION, "Fuel", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null, new BigDecimal("1100.00"), LocalDate.now(), TransactionType.EXPENSE, Category.OTHER, "Credit Card", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null, new BigDecimal("400.00"), LocalDate.now(), TransactionType.EXPENSE, Category.ENTERTAINMENT, "Prime", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null, new BigDecimal("500.00"), LocalDate.now(), TransactionType.EXPENSE, Category.RENT, "OLA", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null, new BigDecimal("600.00"), LocalDate.now(), TransactionType.EXPENSE, Category.FOOD, "Swiggy", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null, new BigDecimal("200.00"), LocalDate.now(), TransactionType.EXPENSE, Category.TRANSPORTATION, "Car fuel", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null, new BigDecimal("4000.00"), LocalDate.now(), TransactionType.EXPENSE, Category.FOOD, "Zomato", LocalDateTime.now()));
+        transactions.add(new ExpenseTransaction(null, new BigDecimal("120.00"), LocalDate.now(), TransactionType.EXPENSE, Category.FOOD, "Groceries", LocalDateTime.now()));
 
         repository.saveAll(transactions);
     }
 
     @ParameterizedTest
     @CsvSource({
-        "1,10,1,1,false,false,true,true",
-        "2,10,1,2,false,true,false,true"
+            "1,10,1,1,false,false,true,true",
+            "2,10,1,2,false,true,false,true"
     })
-    void shouldGetExpenseTransaction(int pageNo,int totalElements,int totalPages, int currentPage,
-    boolean hasNext,boolean hasPrevious, boolean isFirst, boolean isLast) throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/api/expense/transactions?page="+pageNo))
+    void shouldGetExpenseTransaction(int pageNo, int totalElements, int totalPages, int currentPage,
+                                     boolean hasNext, boolean hasPrevious, boolean isFirst, boolean isLast) throws Exception {
+        mvc.perform(get("/api/expense/transactions?page=" + pageNo))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElements", CoreMatchers.equalTo(totalElements)))
                 .andExpect(jsonPath("$.totalPages", CoreMatchers.equalTo(totalPages)))
@@ -78,20 +79,20 @@ public class ExpenseControllerTest {
     }
 
     @Test
-    void shouldCreateExpenseTransactionSuccessfully() throws Exception{
+    void shouldCreateExpenseTransactionSuccessfully() throws Exception {
         this.mvc.perform(
-                post("/api/expense/transactions")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "amount": 12000.00,
-                                    "transactionDate": "2024-03-17",
-                                    "type": "INVESTMENT",
-                                    "category": "MUTUAL_FUNDS",
-                                    "description": "Scripbox SIP"
-                                }
-                                """)
-        ).andExpect(status().isCreated())
+                        post("/api/expense/transactions")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                                        {
+                                            "amount": 12000.00,
+                                            "transactionDate": "17/03/2024",
+                                            "type": "INVESTMENT",
+                                            "category": "MUTUAL_FUNDS",
+                                            "description": "Scripbox SIP"
+                                        }
+                                        """)
+                ).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.amount", is(12000.00)))
                 .andExpect(jsonPath("$.type", is("INVESTMENT")));
@@ -104,13 +105,13 @@ public class ExpenseControllerTest {
                         post("/api/expense/transactions")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
-                {
-                                    "transactionDate": "2024-03-17",
-                                    "type": "INVESTMENT",
-                                    "category": "MUTUAL_FUNDS",
-                                    "description": "Scripbox SIP"
-                                }
-                """)
+                                        {
+                                                            "transactionDate": "17/03/2024",
+                                                            "type": "INVESTMENT",
+                                                            "category": "MUTUAL_FUNDS",
+                                                            "description": "Scripbox SIP"
+                                                        }
+                                        """)
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(header().string("Content-Type", is("application/problem+json")))
@@ -121,5 +122,16 @@ public class ExpenseControllerTest {
                 .andExpect(jsonPath("$.violations[0].field", is("amount")))
                 .andExpect(jsonPath("$.violations[0].message", is("amount should not be empty")))
                 .andReturn();
+    }
+
+    @Test
+    void shouldGetSumByTypeForCurrentMonth() throws Exception {
+        this.mvc.perform(
+                get("/api/expense/transactions/sum/EXPENSE")
+        ).andExpect(status().isOk()).andExpect(result -> {
+            String res = result.getResponse().getContentAsString();
+            assertEquals(res, "10420.00");
+
+        });
     }
 }

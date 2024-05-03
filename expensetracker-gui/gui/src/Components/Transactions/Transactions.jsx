@@ -6,10 +6,11 @@ import { capitalizeFirstLetter } from '../../utils/stringUtils';
 
 const Transactions = ({type}) => {
 
-  const {deleteTransaction,totalInvestments,getTransactionsByType,transactions} = useGlobalContext();
+  const {deleteTransaction,totalInvestments,getTransactionsByType,transactions,getTransactionSum,total} = useGlobalContext();
 
   useEffect(()=>{
     getTransactionsByType(type);
+    getTransactionSum(type);
   },[])
 
   return (
@@ -17,7 +18,7 @@ const Transactions = ({type}) => {
       <InnerLayout>
       <h1>My {capitalizeFirstLetter(type)}s</h1>
       <h2 className='total-income'>Total {capitalizeFirstLetter(type)}s for this month:
-      <span>₹{totalInvestments()}</span>
+      <span>₹{total}</span>
         </h2>
       </InnerLayout>
     </TransactionsStyled>

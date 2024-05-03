@@ -13,6 +13,7 @@ export const GlobalProvider = ({ children }) => {
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
+  const[total,setTotal]= useState(0);
 
   const addTransaction = async (request) => {
     const { transactionDate } = request;
@@ -125,27 +126,13 @@ export const GlobalProvider = ({ children }) => {
   };
 
 
-  const transactionSum = (type) => {
-    let totalExpense = 0;
-
-    switch(type){
-      case "EXPENSE":
-        {
-
-        }
-        break;
-      case "EXPENSE":
-        {
-  
-        }
-        break;
-      case "EXPENSE":
-        {
-  
-        }
-        break;
-      default:
-        return totalExpense;
+  const getTransactionSum = async (type) => {
+    
+    try{
+      const res = await axios (`${BASE_URL}transactions/sum/${type}`)
+      setTotal(res.data);
+    }catch(error){
+      console.log(error)
     }
   };
 
@@ -178,7 +165,9 @@ export const GlobalProvider = ({ children }) => {
         investments,
         totalInvestments,
         getTransactionsByType,
-        transactions
+        transactions,
+        getTransactionSum,
+        total
       }}
     >
       {children}

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -71,17 +72,17 @@ public class ExpenseService {
         repository.deleteById(id);
     }
 
-    public Double getSumByType(String type) {
+    @Transactional(readOnly = true)
+    public BigDecimal getSumByTransactionType(String type) {
         switch (type){
             case "EXPENSE":
-                break;
+                return repository.getTotalAmountByTypeForCurrentMonth(TransactionType.EXPENSE);
             case "INCOME":
-                break;
+                return repository.getTotalAmountByTypeForCurrentMonth(TransactionType.INCOME);
             case "INVESTMENT":
-                break;
+                return repository.getTotalAmountByTypeForCurrentMonth(TransactionType.INVESTMENT);
             default:
-               return 0D;
+               return new BigDecimal(0);
         }
-        return 0d;
     }
 }
