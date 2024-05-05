@@ -3,31 +3,44 @@ import styled from 'styled-components'
 import { useGlobalContext } from '../../context/globalContext'
 
 const History = () => {
-  const {transactionHistory} = useGlobalContext();
-  const[...history] = transactionHistory();
+  const { dashboardData } = useGlobalContext();
+  const renderHistory = () => {
+    const history = dashboardData.recentTransactions;
+    const historyElements = history && history.map((item) => {
+      const { id, type, amount, description } = item
+      return (
+        <div className="history-item" key={id}>
+          <p style={{
+            color: type === 'EXPENSE' ? 'red' : 'var(--color-green)'
+          }}>
+            {description}
+          </p>
+          <p style={{
+            color: type === 'EXPENSE' ? 'red' : 'var(--color-green)'
+          }}>
+            {
+              type === 'EXPENSE' ? `-${amount < 0 ? 0 : amount}` : `+${amount < 0 ? 0 : amount}`
+            }
+          </p>
+        </div>
+      )
+    })
+
+    return (<>
+      {historyElements}
+    </>)
+
+  }
   return (
     <HistoryStyled>
       <h2>Recent History</h2>
       {
-        history.map((item)=>{
-          const {id,type,amount,description} = item
-          return (
-            <div className="history-item" key ={id}>
-                <p style ={{
-                  color : type ==='EXPENSE' ? 'red' : 'var(--color-green)'
-                }}>
-                  {description}
-                </p>
-                <p style ={{
-                  color : type ==='EXPENSE' ? 'red' : 'var(--color-green)'
-                }}>
-                  {
-                    type === 'EXPENSE' ? `-${amount<0?0:amount}` : `+${amount<0?0:amount}`
-                  }
-                </p>
-            </div>
-          )
-        })
+        dashboardData ? <>
+          {
+            dashboardData.recentTransactions &&
+            renderHistory()
+          }
+        </> : <h3>Loading...</h3>
       }
     </HistoryStyled>
   )

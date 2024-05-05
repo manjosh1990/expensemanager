@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Chart as ChartJs,
   CategoryScale,
@@ -13,7 +13,6 @@ import {
 
 import { Line } from 'react-chartjs-2';
 import styled from 'styled-components';
-import { useGlobalContext } from '../../context/globalContext';
 import { dateFormat } from '../../utils/dateFormat';
 
 ChartJs.register(
@@ -27,11 +26,36 @@ ChartJs.register(
   ArcElement,
 )
 
-const Chart = () => {
-  const { incomes, expenses } = useGlobalContext();
+const Chart = ({dashboardData}) => {
+  const [items, setItems] = useState([]);
+  const [dates, setDates] = useState([]);
+  const [incomes, setIncomes] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [investments, setInvestments] = useState([]);
+  useEffect(() => {
+    if (dashboardData && dashboardData.chartData) {
+      setItems(dashboardData.chartData);
+      setIncomes(items && items.filter((item) => item.type === "INCOME"))
+      setExpenses(items && items.filter((item) => item.type === "EXPENSE"))
+      setInvestments(items &&items.filter((item) => item.type === "INVESTMENT"))
+      setDates(getUniqueDates);
+    }
+  }, [dashboardData])
+  console.log(items)
+  const getUniqueDates = () => {
+    const seenDates = new Set();
+    const uniqueDates = [];
+    items.forEach((item) => {
+      if (!seenDates.has(item.transactionDate)) {
+        seenDates.add(item.transactionDate);
+        uniqueDates.push(item);
+      }
+    });
+    return uniqueDates;
+  };
   const data = {
-    labels: expenses.map((inc) => {
-      const { transactionDate } = inc
+    labels: dates && dates.map((item) => {
+      const { transactionDate } = item;
       return dateFormat(transactionDate)
     }),
     datasets: [
@@ -56,13 +80,30 @@ const Chart = () => {
         ],
         backgroundColor: 'red',
         tension: .2
+      },
+      {
+        label: 'Investments',
+        data: [
+          ...investments.map((investment) => {
+            const { amount } = investment
+            return amount
+          })
+        ],
+        backgroundColor: 'blue',
+        tension: .2
       }
     ]
   }
-  return (
-    <ChartStyled >
-      <Line data={data} />
-    </ChartStyled>
+  function renderChart() {
+    return (
+      <ChartStyled >
+        <Line data={data} />
+      </ChartStyled>
+    )
+  }
+  return (<>
+    {items && dates && renderChart()}
+  </>
   )
 }
 

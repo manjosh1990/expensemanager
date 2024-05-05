@@ -2,6 +2,7 @@ package com.expensetracker.api.api;
 
 import com.expensetracker.api.domain.expensetransactions.ExpenseService;
 import com.expensetracker.api.domain.expensetransactions.dtos.CreateTransactionRequest;
+import com.expensetracker.api.domain.expensetransactions.dtos.DashboardStats;
 import com.expensetracker.api.domain.expensetransactions.dtos.ExpenseTransactionDTO;
 import com.expensetracker.api.domain.expensetransactions.dtos.TransactionsDTO;
 import com.expensetracker.api.domain.expensetransactions.entity.Category;
@@ -60,5 +61,10 @@ public class ExpenseController {
     @GetMapping("/sum/{type}")
     public ResponseEntity<?> getSumByType(@PathVariable String type) {
         return ResponseEntity.ok(expenseService.getSumByTransactionType(type));
+    }
+
+    @GetMapping("/stats")
+    public DashboardStats getCurrentMonthStats() {
+        return expenseService.getCurrentMonthStats();
     }
 }

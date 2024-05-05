@@ -5,7 +5,7 @@ import { menuItems } from '../../utils/menuItems'
 import { signout } from '../../utils/icons'
 import { useGlobalContext } from '../../context/globalContext'
 
-function Navigation({active,setActive}) {
+function Navigation({active,setActive,setFormType}) {
   const {setError} = useGlobalContext();
   
   return (
@@ -24,6 +24,7 @@ function Navigation({active,setActive}) {
             onClick={()=>{
               setError(null);
               setActive(item.id)
+              setFormType(item.formType)
             }}
             className={active === item.id?'active':''}
           >

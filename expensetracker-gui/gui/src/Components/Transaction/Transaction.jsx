@@ -72,7 +72,7 @@ const Transaction = ({
               color={'#fff'}
               iColor={'#fff'}
               hColor={'var(--color-green)'}
-              onClick={() => deleteItem(id)}
+              onClick={() => deleteItem(type,id)}
             />
           </div>
         </div>

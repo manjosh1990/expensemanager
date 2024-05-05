@@ -3,23 +3,53 @@ import styled from 'styled-components';
 import { useGlobalContext } from '../../context/globalContext';
 import { InnerLayout } from '../../styles/Layout';
 import { capitalizeFirstLetter } from '../../utils/stringUtils';
+import Form from '../Forms/Form';
+import Transaction from '../Transaction/Transaction';
 
-const Transactions = ({type}) => {
-
-  const {deleteTransaction,totalInvestments,getTransactionsByType,transactions,getTransactionSum,total} = useGlobalContext();
-
-  useEffect(()=>{
+const Transactions = ({ type }) => {
+  const { deleteTransaction, getTransactionsByType, transactions, total ,loading} = useGlobalContext();
+  useEffect(() => {
     getTransactionsByType(type);
-    getTransactionSum(type);
-  },[])
+  }, [type])
+  const renderTransactions = () => {
+    const transactionElements = transactions.map((transaction) => {
+      const { id, amount, transactionDate, type, category, description, createAt } = transaction;
+      return <Transaction key={id}
+        id={id}
+        amount={amount}
+        transactionDate={transactionDate}
+        type={type}
+        category={category}
+        description={description}
+        createAt={createAt}
+        indicatorColor="var(--color-green)"
+        deleteItem={deleteTransaction}
+      />
+    })
 
+    return (<>
+      {transactionElements}
+    </>)
+  }
   return (
     <TransactionsStyled>
-      <InnerLayout>
-      <h1>My {capitalizeFirstLetter(type)}s</h1>
-      <h2 className='total-income'>Total {capitalizeFirstLetter(type)}s for this month:
-      <span>₹{total}</span>
+      <InnerLayout>{
+          loading ? (<h1>Loading...</h1>) : <>
+          <h1>My {capitalizeFirstLetter(type)}s</h1>
+        <h2 className='total-con'>Total {capitalizeFirstLetter(type)}s for this month:
+          <span>₹{total}</span>
         </h2>
+        <div className='transaction-content'>
+          <div>
+            <Form formType={type} />
+          </div>
+          <div className='transactions'>
+            {renderTransactions()}
+          </div>
+        </div>
+          </>
+        }
+        
       </InnerLayout>
     </TransactionsStyled>
   )
@@ -28,7 +58,7 @@ const Transactions = ({type}) => {
 const TransactionsStyled = styled.div`
   display: flex;
   overflow: auto;
-  .total-income{
+  .total-con{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -46,10 +76,10 @@ const TransactionsStyled = styled.div`
       color: var(--color-green);
     }
   }
-  .income-content{
+  .transaction-content{
     display: flex;
     gap: 2rem;
-    .incomes{
+    .transactions{
       flex:1;
     }
   }

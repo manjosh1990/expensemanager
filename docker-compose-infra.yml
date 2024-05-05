@@ -8,3 +8,5 @@ services:
       - POSTGRES_DB=expensedb
     ports:
       - "15432:5432"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data

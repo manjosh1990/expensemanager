@@ -7,36 +7,45 @@ import { useGlobalContext } from '../../context/globalContext';
 import History from '../History/History';
 
 const Dashboard = () => {
-  const { getIncomes, getExpenses, totalIncome, totalExpense, totalBalance, incomes, expenses } = useGlobalContext();
-
+  const {getDashboardData, dashboardData} = useGlobalContext();
   useEffect(() => {
-    getIncomes();
-    getExpenses();
+    const fetchDashboardData =() =>{
+      getDashboardData();
+    };
+    fetchDashboardData();
   }, [])
   return (
     <DashboardStyled>
       <InnerLayout>
-        <h1>All Transactions</h1>
+        {dashboardData ? <>
+          <h1>All Transactions</h1>
         <div className="stats-con">
           <div className="chart-con">
-            <Chart />
+            {dashboardData && <Chart dashboardData = {dashboardData}/>}
             <div className="amount-con">
               <div className="income">
                 <h2>Total Income</h2>
                 <p>
-                  {rupee} {totalIncome()}
+                  {rupee} {dashboardData.totalIncome?dashboardData.totalIncome : 0}
                 </p>
               </div>
               <div className="expense">
                 <h2>Total Expense</h2>
                 <p>
-                  {rupee} {totalExpense()}
+                  {rupee} { dashboardData.totalExpense?dashboardData.totalExpense : 0}
                 </p>
+              </div>
+              <div className="investment">
+                <h2>Total Investment
+                  <p>
+                    {rupee} { dashboardData.totalInvestment?dashboardData.totalInvestment : 0}
+                  </p>
+                </h2>
               </div>
               <div className="balance">
                 <h2>Total Balance
                   <p>
-                    {rupee} {totalBalance()}
+                    {rupee} { dashboardData.totalBalance?dashboardData.totalBalance : 0}
                   </p>
                 </h2>
               </div>
@@ -47,23 +56,24 @@ const Dashboard = () => {
             <h2 className='salary-title'>Min <span>Income</span>Max</h2>
             <div className="salary-item">
               <p>
-                ₹{Math.min(...incomes.map(item => item.amount)) === Infinity ? 0 : Math.min(...incomes.map(item => item.amount))}
+                ₹{dashboardData.minIncome?dashboardData.minIncome : 0}
               </p>
               <p>
-                ₹{Math.max(...incomes.map(item => item.amount)) < 0 ? 0 : Math.max(...incomes.map(item => item.amount))}
+                ₹{dashboardData.maxIncome?dashboardData.maxIncome : 0}
               </p>
             </div>
             <h2 className="salary-title">Min <span>Expense</span>Max</h2>
             <div className="salary-item">
               <p>
-                ₹{Math.min(...expenses.map(item => item.amount)) === Infinity ? 0 : Math.min(...expenses.map(item => item.amount))}
+                ₹{dashboardData.minExpense?dashboardData.minExpense : 0}
               </p>
               <p>
-                ₹{Math.max(...expenses.map(item => item.amount)) < 0 ? 0 : Math.max(...expenses.map(item => item.amount))}
+                ₹{dashboardData.maxExpense?dashboardData.maxExpense : 0}
               </p>
             </div>
           </div>
         </div>
+        </>:<h1>Loading...</h1>}
       </InnerLayout>
     </DashboardStyled>
   )
@@ -82,17 +92,18 @@ const DashboardStyled = styled.div`
         grid-template-columns: repeat(4,1fr);
         gap: 2rem;
         margin-top: 2rem;
-        .income,.expense{
+        padding-bottom: 2rem;
+        .income,.expense, .investment, .balance{
           grid-column: span 2;
         }
-        .income, .expense, .balance{
+        .income, .expense, .balance,.investment{
                     background: #FCF6F9;
                     border: 2px solid #FFFFFF;
                     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
                     border-radius: 20px;
                     padding: 1rem;
                     p{
-                        font-size: 3.5rem;
+                        font-size: 2.5rem;
                         font-weight: 700;
                     }
                 }

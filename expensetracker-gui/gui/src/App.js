@@ -4,27 +4,28 @@ import { MainLayout } from "./styles/Layout";
 import Orb from "./Components/Orb/Orb";
 import Navigation from "./Components/Navigation/Navigation";
 import Dashboard from "./Components/Dashboard/Dashboard";
-import Expenses from "./Components/Expenses/Expenses";
-import Incomes from "./Components/Incomes/Incomes";
 import Transactions from "./Components/Transactions/Transactions";
+import AllTransactions from "./Components/AllTransactions/AllTransactions";
 function App() {
-  const [active, setActive] = useState(5);
+  const [active, setActive] = useState(1);
+  const[formType,setFormType] = useState("");
   const orbMemo = useMemo(() => {
     return <Orb />;
   }, []);
 
   const displayData = () => {
+  
     switch (active) {
       case 1:
         return <Dashboard />;
       case 2:
-        return <Dashboard />;
+        return <AllTransactions />;
       case 3:
-        return <Incomes type={"INCOME"}/>;
+        return <Transactions type={formType}  />;
       case 4:
-        return <Expenses />;
+        return <Transactions type={formType} />;
       case 5:
-        return <Transactions type={"INVESTMENT"} />;
+        return <Transactions type={formType} />;
       default:
         return <Dashboard />;
     }
@@ -33,7 +34,7 @@ function App() {
     <AppStyled>
       {orbMemo}
       <MainLayout>
-        <Navigation active={active} setActive={setActive} />
+        <Navigation active={active} setActive={setActive} setFormType={setFormType}/>
         <main>{displayData()}</main>
       </MainLayout>
     </AppStyled>

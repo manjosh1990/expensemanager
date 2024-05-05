@@ -11,7 +11,7 @@ const Form = ({ formType }) => {
   const [inputState, setInputState] = useState({
     amount: 0,
     transactionDate: '',
-    type: formType,
+    type: '',
     category: '',
     description: ''
   });
@@ -24,7 +24,7 @@ const Form = ({ formType }) => {
       } else {
         setError(null);
       }
-      setInputState({ ...inputState, [name]:  value})
+      setInputState({ ...inputState, [name]:  value, type:formType})
       
     }
   }
@@ -34,7 +34,7 @@ const Form = ({ formType }) => {
   function handleSubmit(e) {
     e.preventDefault();
     if (isFormValid()) {
-      addTransaction(inputState);
+      addTransaction(inputState,type);
     }else{
       setError('All fields are mandatory');
     }
@@ -50,10 +50,10 @@ const Form = ({ formType }) => {
       <div className="input-control">
         <input
           type="text"
-          value={type}
+          value={formType}
           disabled
           name={'type'}
-          placeholder="INCOME"
+          placeholder={formType}
           onChange={handleInput('type')} />
       </div>
       <div className="input-control">

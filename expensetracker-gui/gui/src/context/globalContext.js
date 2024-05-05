@@ -7,43 +7,40 @@ const BASE_URL = "http://localhost:8080/api/expense/";
 const GlobalContext = React.createContext();
 
 export const GlobalProvider = ({ children }) => {
-  const [incomes, setIncomes] = useState([]);
+  // const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
-  const [investments, setInvestments] = useState([]);
+  const [dashboardData, setDashBoardData] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
-  const[total,setTotal]= useState(0);
-
-  const addTransaction = async (request) => {
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const addTransaction = async (request, type) => {
     const { transactionDate } = request;
     request = { ...request, transactionDate: dateFormat(transactionDate) };
     console.log(request);
     try {
       const response = await axios.post(`${BASE_URL}transactions`, request);
       console.log(response);
+      setLoading(false);
     } catch (err) {
       console.log(err);
       setError(err.response.data);
     }
 
-    if (request.type === "INCOME") {
-      getIncomes();
-    } else if (request.type === "EXPENSE") {
-      getExpenses();
-    }
+    getTransactionsByType(type);
   };
 
-  const getIncomes = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}transactions?type=INCOME`);
-      setIncomes(response.data.data);
-    } catch (error) {
-      console.log("error while fetching incomes " + error);
-      setError(error);
-      setIncomes([]);
-    }
-  };
+  // const getIncomes = async () => {
+  //   try {
+  //     const response = await axios.get(`${BASE_URL}transactions?type=INCOME`);
+  //     setIncomes(response.data.data);
+  //   } catch (error) {
+  //     console.log("error while fetching incomes " + error);
+  //     setError(error);
+  //     setIncomes([]);
+  //   }
+  // };
 
   const getExpenses = async () => {
     try {
@@ -56,50 +53,27 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
-  const getInvestments = async () => {
+  const getDashboardData = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}transactions?type=INVESTMENT`);
-      setInvestments(response.data.data);
+      const response = await axios.get(`${BASE_URL}transactions/stats`);
+      setDashBoardData(response.data);
     } catch (error) {
-      console.log("error while fetching expenses " + error);
+      console.log("error while fetching dashboard data " + error);
       setError(error);
-      setInvestments([]);
     }
   };
 
   const getTransactionsByType = async (type) => {
     try {
+      setLoading(true);
       const response = await axios.get(`${BASE_URL}transactions?type=${type}`);
       setTransactions(response.data.data);
+      getTransactionSum(type);
     } catch (error) {
       console.log("error while fetching expenses " + error);
       setError(error);
       setTransactions([]);
     }
-  };
-
-  const totalIncome = () => {
-    let totalIncome = 0;
-    incomes.forEach((income) => {
-      totalIncome += income.amount;
-    });
-    return totalIncome;
-  };
-
-  const totalInvestments = () => {
-    let totalInvestments = 0;
-    investments.forEach((income) => {
-      totalInvestments += income.amount;
-    });
-    return totalInvestments;
-  };
-
-  const totalExpense = () => {
-    let totalExpense = 0;
-    expenses.forEach((expense) => {
-      totalExpense += expense.amount;
-    });
-    return totalExpense;
   };
 
   const getCategories = async () => {
@@ -110,64 +84,53 @@ export const GlobalProvider = ({ children }) => {
       console.log("error while fetching categories ," + error);
     }
   };
-  const deleteTransaction = async (id) => {
+  const deleteTransaction = async (type, id) => {
     try {
       const res = await axios.delete(`${BASE_URL}transactions/${id}`);
       console.log(res);
+      setLoading(false);
     } catch (error) {
       console.log("error while deleting transaction");
     }
-    getIncomes();
-    getExpenses();
+    getTransactionsByType(type);
   };
-
-  const totalBalance = () => { //call backend
-    return totalIncome() - totalExpense();
-  };
-
 
   const getTransactionSum = async (type) => {
-    
-    try{
-      const res = await axios (`${BASE_URL}transactions/sum/${type}`)
+    try {
+      const res = await axios(`${BASE_URL}transactions/sum/${type}`);
+      setLoading(false);
       setTotal(res.data);
-    }catch(error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
   };
 
-
-  const transactionHistory = () => { //call backend
-    const history = [...incomes, ...expenses];
-    history.sort((a, b) => {
-      return new Date(b.transactionDate) - new Date(a.transactionDate);
-    });
-    return history.slice(0, 5);
-  };
+  // const transactionHistory = () => {
+  //   //call backend
+  //   const history = [...incomes, ...expenses];
+  //   history.sort((a, b) => {
+  //     return new Date(b.transactionDate) - new Date(a.transactionDate);
+  //   });
+  //   return history.slice(0, 5);
+  // };
   return (
     <GlobalContext.Provider
       value={{
         addTransaction,
-        incomes,
-        getIncomes,
-        totalIncome,
         getCategories,
         categories,
         deleteTransaction,
         expenses,
         getExpenses,
-        totalExpense,
-        totalBalance,
-        transactionHistory,
         error,
         setError,
-        getInvestments,
-        investments,
-        totalInvestments,
         getTransactionsByType,
         transactions,
         getTransactionSum,
-        total
+        total,
+        loading,
+        getDashboardData,
+        dashboardData
       }}
     >
       {children}
