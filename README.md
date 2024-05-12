@@ -17,3 +17,5 @@ cd xpensive-app
 $ ./run.sh start_infra
 $ ./run.sh stop_infra
 ```
+## Landing page
+![image](https://github.com/manjosh1990/expensemanager/assets/29533013/27be5be0-4884-4fea-b07e-b872b6d119c0)
