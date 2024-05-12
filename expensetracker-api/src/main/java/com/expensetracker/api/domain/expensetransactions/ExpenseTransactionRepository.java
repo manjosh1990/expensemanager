@@ -49,4 +49,14 @@ public interface ExpenseTransactionRepository extends JpaRepository<ExpenseTrans
             where MONTH(e.transactionDate)= MONTH(CURRENT_DATE) AND YEAR(e.transactionDate) = YEAR(CURRENT_DATE) order by e.transactionDate
             """)
     List<ExpenseTransactionChartDto> getExpenseTransactionsForChart();
+    @Query("""
+            SELECT DATE(t.transactionDate) AS transactionDate,
+            SUM(CASE WHEN t.type = 'INCOME' THEN t.amount ELSE 0 END) AS totalIncome,
+            SUM(CASE WHEN t.type = 'EXPENSE' THEN t.amount ELSE 0 END) AS totalExpense,
+            SUM(CASE WHEN t.type = 'INVESTMENT' THEN t.amount ELSE 0 END) AS totalInvestment
+            from ExpenseTransaction t
+            where MONTH(t.transactionDate)= MONTH(CURRENT_DATE) AND YEAR(t.transactionDate) = YEAR(CURRENT_DATE) 
+            GROUP BY DATE(t.transactionDate) ORDER BY t.transactionDate
+            """)
+    List<?> getTransactionChartSummary();
 }

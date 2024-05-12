@@ -23,20 +23,22 @@ public class ExpenseController {
     private final ExpenseService expenseService;
 
     @GetMapping
-    public TransactionsDTO getTransactionsByCategory(@RequestParam(name = "page", defaultValue = "1") Integer page, @RequestParam(name = "category", defaultValue = "") String category, @RequestParam(name = "type", defaultValue = "") String type) {
+    public TransactionsDTO getTransactionsByCategory(@RequestParam(name = "page", defaultValue = "1") Integer page,
+                                                     @RequestParam(name = "category", defaultValue = "") String category,
+                                                     @RequestParam(name = "type", defaultValue = "") String type,
+                                                     @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
         if ((category == null || category.trim().length() == 0) && (type == null || type.trim().length() == 0)) {
-            return expenseService.getTransactions(page);
+            return expenseService.getTransactions(page,pageSize);
         }
         if (type != null && !type.trim().isEmpty()) {
-            return expenseService.searchTransactionsByType(type, page);
+            return expenseService.searchTransactionsByType(type, page,pageSize);
         }
-        return expenseService.searchTransactionsByCategory(category, page);
+        return expenseService.searchTransactionsByCategory(category, page,pageSize);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ExpenseTransactionDTO createExpenseTransaction(@RequestBody @Valid CreateTransactionRequest request) {
-
         return expenseService.createExpenseTransaction(request);
     }
 

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -24,5 +26,8 @@ public class DashboardStats {
     private BigDecimal maxExpense;
     private BigDecimal minInvestment;
     private BigDecimal maxInvestment;
-    private List<ExpenseTransactionChartDto> chartData;
+    private List<Date> dates = new ArrayList<>();
+    private List<BigDecimal> incomesSum = new ArrayList<>();
+    private List<BigDecimal> expensesSum = new ArrayList<>();
+    private List<BigDecimal> investmentsSum = new ArrayList<>();
 }
