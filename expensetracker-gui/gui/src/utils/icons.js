@@ -37,3 +37,5 @@ export const shopping = <i className="fa-solid fa-cart-shopping"></i>
 export const mutual_funds = <i className="fa-solid fa-money-bill-trend-up"></i>
 export const loan = <i className="fa-solid fa-landmark"></i>
 export const investement = <i className="fa-solid fa-seedling"></i>
+export const next = <i className="fa-solid fa-angles-right"></i>
+export const prev = <i className="fa-solid fa-angles-left"></i>

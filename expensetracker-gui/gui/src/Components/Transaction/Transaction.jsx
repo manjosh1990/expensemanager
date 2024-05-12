@@ -10,7 +10,6 @@ const Transaction = ({
   transactionDate,
   category,
   description,
-  createAt,
   type,
   indicatorColor,
   deleteItem

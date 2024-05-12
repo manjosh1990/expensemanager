@@ -14,6 +14,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import styled from 'styled-components';
 import { dateFormat } from '../../utils/dateFormat';
+import { useGlobalContext } from '../../context/globalContext';
 
 ChartJs.register(
   CategoryScale,
@@ -26,46 +27,23 @@ ChartJs.register(
   ArcElement,
 )
 
-const Chart = ({dashboardData}) => {
-  const [items, setItems] = useState([]);
-  const [dates, setDates] = useState([]);
-  const [incomes, setIncomes] = useState([]);
-  const [expenses, setExpenses] = useState([]);
-  const [investments, setInvestments] = useState([]);
-  useEffect(() => {
-    if (dashboardData && dashboardData.chartData) {
-      setItems(dashboardData.chartData);
-      setIncomes(items && items.filter((item) => item.type === "INCOME"))
-      setExpenses(items && items.filter((item) => item.type === "EXPENSE"))
-      setInvestments(items &&items.filter((item) => item.type === "INVESTMENT"))
-      setDates(getUniqueDates);
-    }
-  }, [dashboardData])
-  console.log(items)
-  const getUniqueDates = () => {
-    const seenDates = new Set();
-    const uniqueDates = [];
-    items.forEach((item) => {
-      if (!seenDates.has(item.transactionDate)) {
-        seenDates.add(item.transactionDate);
-        uniqueDates.push(item);
-      }
-    });
-    return uniqueDates;
-  };
+const Chart = () => {
+  const {getDashboardData, dates, incomes, expenses, investments } = useGlobalContext();
+  const [isLoading,setIsLoading] = useState(true);
+
+  useEffect(()=>{
+    getDashboardData().finally(()=>setIsLoading(false));
+  },[])
   const data = {
     labels: dates && dates.map((item) => {
-      const { transactionDate } = item;
-      return dateFormat(transactionDate)
+      
+      return dateFormat(item)
     }),
     datasets: [
       {
         label: 'Income',
         data: [
-          ...incomes.map((income) => {
-            const { amount } = income
-            return amount
-          })
+          ...incomes
         ],
         backgroundColor: 'green',
         tension: .2
@@ -73,10 +51,7 @@ const Chart = ({dashboardData}) => {
       {
         label: 'Expenses',
         data: [
-          ...expenses.map((expense) => {
-            const { amount } = expense
-            return amount
-          })
+          ...expenses
         ],
         backgroundColor: 'red',
         tension: .2
@@ -84,10 +59,7 @@ const Chart = ({dashboardData}) => {
       {
         label: 'Investments',
         data: [
-          ...investments.map((investment) => {
-            const { amount } = investment
-            return amount
-          })
+          ...investments
         ],
         backgroundColor: 'blue',
         tension: .2
@@ -102,7 +74,7 @@ const Chart = ({dashboardData}) => {
     )
   }
   return (<>
-    {items && dates && renderChart()}
+    {isLoading?<p>loading chart data...</p>: renderChart()}
   </>
   )
 }

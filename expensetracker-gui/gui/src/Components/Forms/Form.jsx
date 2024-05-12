@@ -77,7 +77,7 @@ const Form = ({ formType }) => {
         <select required value={category} name="category" id="category"
           onChange={handleInput('category')}
         >
-          <option value=" disabled">Select Option</option>
+          <option value="disabled">Select Option</option>
           {selectOptions}
         </select>
       </div>

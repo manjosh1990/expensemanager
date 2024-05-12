@@ -8,13 +8,7 @@ export const menuItems = [
     link: '/dashboard',
     formType:""
 },
-{
-    id: 2,
-    title: "View Transactions",
-    icon: transactions,
-    link: "/dashboard",
-    formType:""
-},
+
 {
     id: 3,
     title: "Income",
@@ -35,5 +29,12 @@ export const menuItems = [
     icon: investement,
     link: "/dashboard",
     formType:"INVESTMENT"
-}
+},
+{
+    id: 2,
+    title: "View Transactions",
+    icon: transactions,
+    link: "/dashboard",
+    formType:""
+},
 ]

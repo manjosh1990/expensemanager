@@ -21,7 +21,7 @@ const Dashboard = () => {
           <h1>All Transactions</h1>
         <div className="stats-con">
           <div className="chart-con">
-            {dashboardData && <Chart dashboardData = {dashboardData}/>}
+           <Chart/>
             <div className="amount-con">
               <div className="income">
                 <h2>Total Income</h2>
@@ -96,17 +96,31 @@ const DashboardStyled = styled.div`
         .income,.expense, .investment, .balance{
           grid-column: span 2;
         }
-        .income, .expense, .balance,.investment{
+        .income, .expense, .balance, .investment{
                     background: #FCF6F9;
                     border: 2px solid #FFFFFF;
                     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
                     border-radius: 20px;
                     padding: 1rem;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
                     p{
                         font-size: 2.5rem;
                         font-weight: 700;
                     }
                 }
+      }
+      .expense{
+        p{
+          color: red;
+        }
+      }
+      .investment{
+        p{
+          color: #22226099;
+        }
       }
       .balance{
                     grid-column: 2 / 4;

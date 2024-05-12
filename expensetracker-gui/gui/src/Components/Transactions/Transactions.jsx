@@ -13,6 +13,7 @@ const Transactions = ({ type }) => {
   }, [type])
   const renderTransactions = () => {
     const transactionElements = transactions.map((transaction) => {
+      console.log(transaction)
       const { id, amount, transactionDate, type, category, description, createAt } = transaction;
       return <Transaction key={id}
         id={id}

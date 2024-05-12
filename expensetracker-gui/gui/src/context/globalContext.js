@@ -7,14 +7,21 @@ const BASE_URL = "http://localhost:8080/api/expense/";
 const GlobalContext = React.createContext();
 
 export const GlobalProvider = ({ children }) => {
-  // const [incomes, setIncomes] = useState([]);
-  const [expenses, setExpenses] = useState([]);
   const [dashboardData, setDashBoardData] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [allTransactions,setAllTransactions] = useState(null)
+
+
+  //chart states
+  const [dates, setDates] = useState([]);
+  const [incomes, setIncomes] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [investments, setInvestments] = useState([]);
+
   const addTransaction = async (request, type) => {
     const { transactionDate } = request;
     request = { ...request, transactionDate: dateFormat(transactionDate) };
@@ -29,34 +36,21 @@ export const GlobalProvider = ({ children }) => {
     }
 
     getTransactionsByType(type);
+    getDashboardData();
   };
 
-  // const getIncomes = async () => {
-  //   try {
-  //     const response = await axios.get(`${BASE_URL}transactions?type=INCOME`);
-  //     setIncomes(response.data.data);
-  //   } catch (error) {
-  //     console.log("error while fetching incomes " + error);
-  //     setError(error);
-  //     setIncomes([]);
-  //   }
-  // };
 
-  const getExpenses = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}transactions?type=EXPENSE`);
-      setExpenses(response.data.data);
-    } catch (error) {
-      console.log("error while fetching expenses " + error);
-      setError(error);
-      setExpenses([]);
-    }
-  };
 
   const getDashboardData = async () => {
     try {
       const response = await axios.get(`${BASE_URL}transactions/stats`);
       setDashBoardData(response.data);
+      if(response.data){
+        setDates(response.data.dates);
+        setIncomes(response.data.incomesSum)
+        setExpenses(response.data.expensesSum)
+        setInvestments(response.data.investmentsSum)
+      }
     } catch (error) {
       console.log("error while fetching dashboard data " + error);
       setError(error);
@@ -76,6 +70,20 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
+  const getAllTransactions = async(page,pageSize) =>{
+    try{
+      setLoading(true);
+      pageSize = pageSize?pageSize : 10;
+      const response = await axios.get(`${BASE_URL}transactions?page=${page}&pageSize=${pageSize}`);
+      setAllTransactions(response.data)
+      setLoading(false);
+    }catch(error){
+      console.log(error)
+      setError(error)
+
+    }
+  }
+
   const getCategories = async () => {
     try {
       const response = await axios.get(`${BASE_URL}transactions/category`);
@@ -93,6 +101,7 @@ export const GlobalProvider = ({ children }) => {
       console.log("error while deleting transaction");
     }
     getTransactionsByType(type);
+    getDashboardData();
   };
 
   const getTransactionSum = async (type) => {
@@ -105,14 +114,8 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
-  // const transactionHistory = () => {
-  //   //call backend
-  //   const history = [...incomes, ...expenses];
-  //   history.sort((a, b) => {
-  //     return new Date(b.transactionDate) - new Date(a.transactionDate);
-  //   });
-  //   return history.slice(0, 5);
-  // };
+ 
+
   return (
     <GlobalContext.Provider
       value={{
@@ -120,8 +123,6 @@ export const GlobalProvider = ({ children }) => {
         getCategories,
         categories,
         deleteTransaction,
-        expenses,
-        getExpenses,
         error,
         setError,
         getTransactionsByType,
@@ -130,7 +131,13 @@ export const GlobalProvider = ({ children }) => {
         total,
         loading,
         getDashboardData,
-        dashboardData
+        dashboardData,
+        dates,
+        incomes,
+        expenses,
+        investments,
+        getAllTransactions,
+        allTransactions
       }}
     >
       {children}
