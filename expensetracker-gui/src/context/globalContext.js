@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { dateFormat } from "../utils/dateFormat";
 
-const BASE_URL = "http://localhost:8080/api/expense/";
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 const GlobalContext = React.createContext();
 

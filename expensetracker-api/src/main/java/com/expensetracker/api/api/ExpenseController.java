@@ -27,7 +27,7 @@ public class ExpenseController {
                                                      @RequestParam(name = "category", defaultValue = "") String category,
                                                      @RequestParam(name = "type", defaultValue = "") String type,
                                                      @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
-        if ((category == null || category.trim().length() == 0) && (type == null || type.trim().length() == 0)) {
+        if ((category == null || category.trim().isEmpty()) && (type == null || type.trim().isEmpty())) {
             return expenseService.getTransactions(page,pageSize);
         }
         if (type != null && !type.trim().isEmpty()) {

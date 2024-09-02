@@ -1,5 +1,5 @@
 {
-  "name": "gui",
+  "name": "expense-tracker-gui",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

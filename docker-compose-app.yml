@@ -15,3 +15,15 @@ services:
     restart: always
     depends_on:
       - expensetracker-db
+  expensetracker-gui:
+    container_name: expensetracker-gui
+    build:
+      context: expensetracker-gui
+      dockerfile: Dockerfile
+    ports:
+        - "10443:10443"
+    environment:
+      REACT_APP_API_URL: http://localhost:18080/api/expense/
+    restart: always
+    depends_on:
+      - expensetracker-api

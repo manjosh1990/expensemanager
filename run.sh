@@ -2,8 +2,13 @@ declare dc_infra=docker-compose-infra.yml
 declare dc_app=docker-compose-app.yml
 
 function build_api() {
-    cd expensetracker-api
+    cd expensetracker-api || exit
     ./mvnw clean package -DskipTests
+    cd ..
+}
+function build_gui() {
+    cd expensetracker-gui || exit
+    docker build -t expensetracker-gui .
     cd ..
 }
 
@@ -20,6 +25,7 @@ function stop_infra() {
 }
 
 function start() {
+    build_gui
     build_api
     echo "Starting all docker containers...."
     docker-compose -f ${dc_infra} -f ${dc_app} up --build -d
