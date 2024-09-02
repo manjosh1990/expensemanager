@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  push:
+    paths:
+      - "expensetracker-gui/**"
+    branches: [ "**" ]
+
+jobs:
+  build-expensetracker-gui:
+    name: Build expensetracker-gui
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./expensetracker-gui
+    strategy:
+      matrix:
+        node-version: [ 10.x, 12.x, 14.x ,16.x]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+            node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+      - if: ${{ github.ref == 'refs/heads/main' }}
+        name: Build and Publish Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/expensetracker-gui .
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/expensetracker-gui
