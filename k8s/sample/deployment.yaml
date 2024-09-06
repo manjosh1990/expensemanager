@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expensetracker-api
+  labels:
+    app: expensetracker-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: expensetracker-api
+  template:
+    metadata:
+      labels:
+        app: expensetracker-api
+    spec:
+      containers:
+      - image: manjosh1990/expensetracker-api
+        name: expensetracker-api

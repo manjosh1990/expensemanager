@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: expensetracker-api
+  labels:
+    app: expensetracker-api
+    version: "1.0"
+spec:
+  containers:
+  - image: manjosh1990/expensetracker-api
+    name: expensetracker-api
+    ports:
+    - containerPort: 18080
+

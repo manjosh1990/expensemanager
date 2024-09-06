@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: expensetracker-config
+data:
+  postgres_host: postgres
+  postgres_dbname: expensedb
+  postgres_port: "5432"
+

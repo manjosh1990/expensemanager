@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expensetracker-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: expensetracker-api-pod
+  template:
+    metadata:
+      labels:
+        app: expensetracker-api-pod
+    spec:
+      containers:
+      - image: manjosh1990/expensetracker-api
+        name: expensetracker-api
+        ports:
+          - containerPort: 8080
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: k8s
+#          - name: DB_HOST
+#            valueFrom:
+#              configMapKeyRef:
+#                name: expensetracker-config
+#                key: postgres_host
+#          - name: DB_PORT
+#            valueFrom:
+#              configMapKeyRef:
+#                name: expensetracker-config
+#                key: postgres_port
+#          - name: DB_DATABASE
+#            valueFrom:
+#              configMapKeyRef:
+#                name: expensetracker-config
+#                key: postgres_dbname
+#          - name: DB_USERNAME
+#            valueFrom:
+#              secretKeyRef:
+#                name: expensetracker-secrets
+#                key: postgres_username
+#          - name: DB_PASSWORD
+#            valueFrom:
+#              secretKeyRef:
+#                name: expensetracker-secrets
+#                key: postgres_password

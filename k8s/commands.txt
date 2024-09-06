@@ -1,0 +1,49 @@
+kubectl get pods
+kubectl run expensetracker-gui --image=manjosh1990/expensetracker-gui --port=10443
+kubectl run expensetracker-api --image=manjosh1990/expensetracker-api --port=18080
+kubectl logs expensetracker-gui -f
+
+kubectl exec -it expensetracker-api -- /bin/sh
+kubectl get all
+
+kubectl describe pods expensetracker-api
+
+kubectl delete pods expensetracker-api
+
+# create manifest files
+kubectl run expensetracker-api --image=manjosh1990/expensetracker-api --port=18080 --dry-run=client -o yaml >pod.yaml
+
+#create a pod using yaml
+kubectl apply -f pod.yaml
+
+#delete pod
+kubectl delete -f pod.yaml
+
+#deployments
+kubectl create deployment expensetracker-api --image=manjosh1990/expensetracker-api
+
+kubectl delete deployment.apps/expensetracker-api
+
+#deployments manifest file
+kubectl create deployment expensetracker-api --image=manjosh1990/expensetracker-api --dry-run=client -o yaml > deployment.yaml
+
+kubectl apply -f deployment.yaml
+
+#scale
+kubectl scale deployment expensetracker-api --replicas=3
+#history
+kubectl rollout history deployments expensetracker-api
+
+#deploy all files in directory
+kubectl apply -f .
+
+# create config maps
+kubectl create configmap db-config --from-literal=db_host=postgres --from-literal=db_name=expensedb
+
+kubectl describe configmaps db-config
+kubectl get configmaps db-config -o yaml
+
+kubectl delete cm db-config
+
+#Secrets
+kubectl create secret generic expensetracker-secrets --from-literal=postgres_username=postgres --dry-run=client -o yaml
